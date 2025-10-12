@@ -1,0 +1,26 @@
+import string
+from pyspark.sql import *
+from pyspark.sql import SparkSession
+
+if __name__ != "__main__":
+    pass
+else:
+    spark = SparkSession.builder \
+        .appName("DemoDB") \
+        .master("local[3]") \
+        .getOrCreate()
+
+df = spark.read.csv("D:\PySpark\HelloSpark\Welcome\Source\sf-fire-calls.csv", header="True" \
+                    ,inferSchema="True")
+df.createGlobalTempView("Fire_View")
+
+#spark.sql("create database if not exists demo_db")
+
+
+df2 = spark.sql("select * from global_temp.fire_view")
+df2.show(4)
+spark.sql("show databases").show()
+#spark.sql("show tables in demo_db").show()
+spark.sql("select * from global_temp.fire_view").show()
+
+df3 = spark.sql("select count(*) from global_temp.fire_view").show()
