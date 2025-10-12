@@ -1,0 +1,50 @@
+import string
+from pyspark.sql import *
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+        .appName("DemoDB") \
+        .master("local[3]") \
+        .getOrCreate()
+
+df = spark.read.csv("D:\PySpark\HelloSpark\Welcome\Source\sf-fire-calls.csv", header="True" \
+                    ,inferSchema="True")
+df.createGlobalTempView("Fire_View")
+
+spark.sql("create database if not exists demo_db")
+spark.sql("""create table if not exists demo_db.fire_tbl1(  CallNumber integer,
+  UnitID string,
+  IncidentNumber integer,
+  CallType string,
+  CallDate string,
+  WatchDate string,
+  CallFinalDisposition string,
+  AvailableDtTm string,
+  Address string,
+  City string,
+  Zipcode integer,
+  Battalion string,
+  StationArea string,
+  Box string,
+  OriginalPriority string,
+  Priority string,
+  FinalPriority integer,
+  ALSUnit boolean,
+  CallTypeGroup string,
+  NumAlarms integer,
+  UnitType string,
+  UnitSequenceInCallDispatch integer,
+  FirePreventionDistrict string,
+  SupervisorDistrict string,
+  Neighborhood string,
+  Location string,
+  RowID string,
+  Delay float) using parquet""")
+
+spark.sql("Insert into demo_db.fire_tbl1 select * from global_temp.Fire_View")
+
+df2 = spark.sql("select * from demo_db.fire_tbl1")
+df2.show(4)
+spark.sql("show databases").show()
+spark.sql("show tables in demo_db").show()
+spark.sql("select * from demo_db.fire_tbl1").show()
