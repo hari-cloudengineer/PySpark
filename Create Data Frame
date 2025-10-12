@@ -1,0 +1,13 @@
+from pyspark.sql import *
+print("Hello Spark")
+
+spark = SparkSession.builder\
+        .appName("HelloSpark")\
+        .master("local[2]") \
+        .config("spark.python.worker.faulthandler.enabled", "true")\
+        .getOrCreate()
+
+data_list = [('Ram',25),('John',30),('Sita',23)]
+
+df = spark.createDataFrame(data_list).toDF("name","age")
+df.show()
