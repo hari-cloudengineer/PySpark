@@ -1,0 +1,24 @@
+from pyspark.sql import *
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+        .appName("CSV_FILE") \
+        .master("local[3]") \
+        .getOrCreate()
+
+df = spark.read.csv("D:\PySpark\HelloSpark\Welcome\Source\sf-fire-calls.csv", header=True\
+                    ,inferSchema=True)
+# another method to create data frame
+
+df3 = spark.read \
+      .format("csv") \
+      .option("header","true")  \
+      .option("inferSchema","true") \
+      .load("D:\PySpark\HelloSpark\Welcome\Source\sf-fire-calls.csv")
+
+df.printSchema()
+df2 = df.count()
+df.show(10)
+df3.show(5)
+print(df2)
+print(spark.sparkContext.uiWebUrl)
