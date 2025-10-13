@@ -24,3 +24,28 @@ spark.sql("show databases").show()
 spark.sql("select * from global_temp.fire_view").show()
 
 df3 = spark.sql("select count(*) from global_temp.fire_view").show()
+
+df4 = spark.sql("select distinct calltype from global_temp.fire_view")
+# we must use global_temp schema
+
+df5 = spark.sql("select callNumber, Delay from global_temp.fire_view where delay > 5")
+
+df6 = spark.sql("select callType, count(*) from global_temp.fire_view \
+                group by callType order by count(*) desc")
+
+df7 = spark.sql("select callType,zipcode, count(*) from global_temp.fire_view \
+                group by callType, zipcode order by count(*) desc")
+
+df8 = spark.sql("select DISTINCT YEAR(to_date(callDate,'MM/dd/yyyy')) from global_temp.fire_view")
+
+df.printSchema()
+df2 = df.count()
+df.show(10)
+df3.show(5)
+df4.show()
+print(df2)
+df5.show()
+df6.show()
+df7.show()
+df8.show()
+print(spark.sparkContext.uiWebUrl)
