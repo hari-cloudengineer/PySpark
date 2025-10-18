@@ -1,0 +1,27 @@
+from pyspark.sql import *
+from datetime import datetime
+from pyspark.sql.functions import spark_partition_id
+
+if __name__ == "__main__":
+
+    spark = SparkSession.builder.appName("SparkSchema").getOrCreate()
+
+    df1 = spark.read.parquet(r"D:\PySpark\HelloSpark\Welcome\Source\flight-time.parquet")
+    df1.groupby(spark_partition_id()).count().show()
+
+    df2 = df1.repartition(5)
+    df2.groupby(spark_partition_id()).count().show()
+
+    today_date = datetime.today().strftime('%Y-%m-%d')
+    print(today_date)
+
+    base_path = r"D:\PySpark\HelloSpark\Welcome\Target"
+
+    output_path = f"{base_path}\\{today_date}"
+
+    df2.write \
+       .mode("overwrite") \
+       .parquet(output_path)
+      # .option("path",r"D:\PySpark\HelloSpark\Welcome\Target") \
+
+      # .save()
